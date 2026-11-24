@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8-config-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8-backend
+  template:
+    metadata:
+      labels:
+        app: k8-backend
+    spec:
+      containers:
+      - name: k8-backend
+        image: ayushshh/k8-ingress-backend:v1
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: port
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: DATABASE_URL
